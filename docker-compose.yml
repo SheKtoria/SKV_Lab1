@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  nginx:
+    depends_on:
+     - drupal
+    image: nginx:1.17.4-alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - external
+      - internal
+  mysql:
+    image: mysql:5.7.28
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - internal
+  drupal:
+    image: drupal
+    container_name: drupal
+    depends_on:
+      - mysql
+    restart: always
+    networks:
+      - internal
+networks:
+  external:
+    driver: bridge
+  internal:
+    driver: bridge
+
