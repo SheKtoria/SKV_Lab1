@@ -2,7 +2,7 @@ version: "3.7"
 services:
   nginx:
     depends_on:
-     - drupal
+     - wordpress
     image: nginx:1.17.4-alpine
     container_name: nginx
     restart: unless-stopped
@@ -18,7 +18,7 @@ services:
     container_name: mysql
     restart: unless-stopped
     ports:
-      - "3308:3306"
+      - "3309:3306"
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -30,9 +30,9 @@ services:
       - ./db:/var/lib/mysql
     networks:
       - internal
-  drupal:
-    image: drupal
-    container_name: drupal
+  wordpress:
+    image: wordpress
+    container_name: wordpress
     depends_on:
       - mysql
     restart: always
